@@ -1,0 +1,225 @@
+.score-entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+/* ── Player card ─────────────────────────────────────────────── */
+.score-entry-player {
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    padding: var(--space-3); /* compact on mobile */
+}
+
+@media (min-width: 480px) {
+    .score-entry-player {
+        padding: var(--space-4); /* restore on wider screens */
+    }
+}
+
+.score-entry-player--active {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 1px var(--color-primary);
+}
+
+/* ── Player name row ─────────────────────────────────────────── */
+.score-entry-player-name {
+    font-size: var(--text-base);
+    font-weight: 700;
+    margin-bottom: var(--space-4);
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.score-entry-player-name .score-indicator {
+    margin-left: auto;
+}
+
+/* ── Counter row ─────────────────────────────────────────────── */
+/*
+ * Mobile: 2-column grid — Strokes spans full width on the first row,
+ * Putts and Chips sit side-by-side on the second row.
+ */
+.score-counter-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+}
+
+.score-counter-row > :first-child {
+    grid-column: 1 / -1; /* Strokes: full width */
+}
+
+/* Wider screens: all three counters in one row */
+@media (min-width: 480px) {
+    .score-counter-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .score-counter-row > :first-child {
+        grid-column: auto; /* Strokes back to normal column */
+    }
+}
+
+/* ── Individual counter ──────────────────────────────────────── */
+.score-counter {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.score-counter-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.score-counter-control {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+/* ── Counter buttons — 44×44 minimum touch target ───────────── */
+.score-counter-btn {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    font-size: var(--text-lg);
+    font-weight: 700;
+    transition: background var(--transition-fast);
+}
+
+.score-counter-btn:hover {
+    background: var(--color-bg-hover);
+}
+.score-counter-btn:active {
+    transform: scale(0.93);
+}
+
+/* ── Counter value ───────────────────────────────────────────── */
+/* Default (Putts / Chips, and all counters at ≥ 480px) */
+.score-counter-value {
+    font-size: var(--text-2xl);
+    font-weight: 800;
+    min-width: 32px;
+    text-align: center;
+    color: var(--color-text);
+}
+
+/*
+ * Strokes is full-width on mobile — give it a bigger value display
+ * and a little extra breathing room in its control row.
+ */
+.score-counter-row > :first-child .score-counter-value {
+    font-size: var(--text-4xl); /* 2.25rem — big and readable */
+}
+
+.score-counter-row > :first-child .score-counter-control {
+    gap: var(--space-4); /* more space around the large value */
+}
+
+/* Reset the Strokes overrides once it's in the normal 3-column row */
+@media (min-width: 480px) {
+    .score-counter-row > :first-child .score-counter-value {
+        font-size: var(--text-2xl);
+    }
+
+    .score-counter-row > :first-child .score-counter-control {
+        gap: var(--space-2);
+    }
+}
+
+/* ── Fairway / GIR toggles ───────────────────────────────────── */
+.score-extras {
+    display: flex;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+    margin-top: var(--space-3);
+}
+
+.score-extra-btn {
+    flex: 1;
+    min-width: 80px;
+    min-height: 40px; /* adequate touch target */
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg-input);
+    color: var(--color-text-muted);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    text-align: center;
+    transition: all var(--transition-fast);
+    cursor: pointer;
+}
+
+.score-extra-btn--active {
+    background: var(--color-primary-dim);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.score-extra-btn--hit-active {
+    background: rgba(34, 197, 94, 0.15);
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.score-extra-btn--miss-active {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--color-danger);
+    color: var(--color-danger);
+}
+
+/* ── Score result indicator (badge) ─────────────────────────── */
+.score-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    font-size: var(--text-xs);
+    font-weight: 700;
+    padding: 0 4px;
+}
+
+.score-indicator--eagle {
+    background: var(--color-eagle);
+    color: #fff;
+}
+.score-indicator--birdie {
+    background: var(--color-birdie);
+    color: #fff;
+}
+.score-indicator--par {
+    background: var(--color-bg-input);
+    color: var(--color-par);
+    border: 1px solid var(--color-border);
+}
+.score-indicator--bogey {
+    border: 2px solid var(--color-bogey);
+    color: var(--color-bogey);
+}
+.score-indicator--double {
+    border: 2px solid var(--color-double);
+    color: var(--color-double);
+    border-radius: var(--radius-sm);
+}
+.score-indicator--triple {
+    border: 3px solid var(--color-triple);
+    color: var(--color-triple);
+    border-radius: var(--radius-sm);
+}

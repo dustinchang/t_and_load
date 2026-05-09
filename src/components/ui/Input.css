@@ -1,0 +1,67 @@
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+}
+
+.input-label {
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-text-muted);
+}
+
+.input {
+    background: var(--color-bg-input);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-md);
+    color: var(--color-text);
+    padding: var(--space-3) var(--space-4);
+    /* 16px minimum prevents iOS Safari from auto-zooming on focus */
+    font-size: max(16px, var(--text-base));
+    min-height: 48px;
+    transition:
+        border-color var(--transition-fast),
+        box-shadow var(--transition-fast);
+    width: 100%;
+    outline: none;
+}
+
+.input::placeholder {
+    color: var(--color-text-subtle);
+}
+
+.input:focus {
+    border-color: var(--color-border-focus);
+    box-shadow: 0 0 0 3px var(--color-primary-dim);
+}
+
+.input--error {
+    border-color: var(--color-danger);
+}
+.input--error:focus {
+    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+.input-error-text {
+    font-size: var(--text-xs);
+    color: var(--color-danger);
+}
+
+/* Search input with icon */
+.input-icon-wrapper {
+    position: relative;
+}
+
+.input-icon-wrapper .input {
+    padding-left: var(--space-10);
+}
+
+.input-icon {
+    position: absolute;
+    left: var(--space-3);
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--color-text-subtle);
+    pointer-events: none;
+    display: flex;
+}

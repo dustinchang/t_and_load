@@ -1,0 +1,85 @@
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.75);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: var(--z-modal);
+    animation: fadeIn 0.15s ease;
+}
+
+.modal-backdrop--center {
+    align-items: center;
+}
+
+.modal-sheet {
+    background: var(--color-bg-elevated);
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90dvh;
+    overflow-y: auto;
+    animation: slideUp 0.25s ease;
+    padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* On tablet/desktop, show as centered dialog with rounded corners */
+@media (min-width: 600px) {
+    .modal-sheet {
+        border-radius: var(--radius-xl);
+        max-width: 480px;
+        width: calc(100% - var(--space-8));
+        margin: 0 auto;
+    }
+    .modal-handle {
+        display: none; /* no drag handle needed on desktop */
+    }
+}
+
+.modal-sheet--center {
+    border-radius: var(--radius-xl);
+    max-height: 80dvh;
+    width: calc(100% - var(--space-8));
+}
+
+.modal-handle {
+    width: 40px;
+    height: 4px;
+    background: var(--color-border);
+    border-radius: var(--radius-full);
+    margin: var(--space-3) auto var(--space-2);
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-3) var(--space-5) var(--space-2);
+}
+
+.modal-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+}
+
+.modal-close {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius-full);
+    color: var(--color-text-muted);
+    transition:
+        background var(--transition-fast),
+        color var(--transition-fast);
+}
+.modal-close:hover {
+    background: var(--color-bg-hover);
+    color: var(--color-text);
+}
+
+.modal-body {
+    padding: var(--space-4) var(--space-5) var(--space-6);
+}
