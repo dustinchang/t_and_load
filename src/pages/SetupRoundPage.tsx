@@ -1,12 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { UserPlus, Trash2, Search } from "lucide-react";
+import { UserPlus, Trash2 } from "lucide-react";
 import { Layout, TopBar } from "../components/layout/Layout";
 import { Button } from "../components/ui/Button";
 import { Toggle } from "../components/ui/Toggle";
-import { useCourse } from "../context/CourseContext";
 import { useGame } from "../context/GameContext";
-import type { Player, TeeBox } from "../types";
+import type { CourseDetail, Player, TeeBox } from "../types";
 import "./pages.css";
 
 const TEE_COLORS: Record<TeeBox, string> = {
@@ -27,22 +26,49 @@ function generatePlayerId() {
   return `p-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
 }
 
+function buildSyntheticCourse(
+  name: string,
+  holes: number,
+  par: number,
+): CourseDetail {
+  return {
+    id: 0,
+    club_name: name || "My Round",
+    course_name: name || "My Round",
+    location: {
+      address: "",
+      city: "",
+      state: "",
+      zip: "",
+      country: "",
+      latitude: 0,
+      longitude: 0,
+    },
+    holes,
+    par,
+    // Empty holes array → GameContext will generate synthetic hole rows
+    holes_info: { number_of_holes: holes, holes: [] },
+  };
+}
+
 export function SetupRoundPage() {
   const navigate = useNavigate();
-  const { selectedCourse } = useCourse();
   const { startRound } = useGame();
 
+  const [courseName, setCourseName] = useState("");
+  const [numHoles, setNumHoles] = useState<9 | 18>(18);
+  const [totalPar, setTotalPar] = useState(72);
+  const [teeBox, setTeeBox] = useState<TeeBox>("middle");
+  const [hatGame, setHatGame] = useState(false);
   const [players, setPlayers] = useState<Player[]>([
     { id: generatePlayerId(), name: "", handicap: 0 },
   ]);
-  const [teeBox, setTeeBox] = useState<TeeBox>("middle");
-  const [hatGame, setHatGame] = useState(false);
 
-  useEffect(() => {
-    if (!selectedCourse) navigate("/courses");
-  }, [selectedCourse, navigate]);
-
-  if (!selectedCourse) return null;
+  // Keep par in sync when holes changes (sensible defaults)
+  function handleHolesChange(h: 9 | 18) {
+    setNumHoles(h);
+    setTotalPar(h === 9 ? 36 : 72);
+  }
 
   function addPlayer() {
     if (players.length >= 4) return;
@@ -68,40 +94,69 @@ export function SetupRoundPage() {
   }
 
   function handleStart() {
-    if (!selectedCourse) return;
     const valid = players.filter((p) => p.name.trim());
     if (valid.length === 0) return;
-    startRound(selectedCourse, valid, teeBox, hatGame);
+    const course = buildSyntheticCourse(courseName.trim(), numHoles, totalPar);
+    startRound(course, valid, teeBox, hatGame);
     navigate("/play");
   }
 
   const teesAvailable: TeeBox[] = ["championship", "back", "middle", "forward"];
 
   return (
-    <Layout
-      showNav={false}
-      topBar={
-        <TopBar
-          title="Round Setup"
-          subtitle={selectedCourse.course_name || selectedCourse.club_name}
-          showBack
-        />
-      }
-    >
+    <Layout showNav={false} topBar={<TopBar title="Round Setup" showBack />}>
       <div className="page animate-fade-in">
+        {/* Course info */}
         <div className="page-section">
-          <div className="stat-grid">
-            <div className="stat-card">
-              <span className="stat-value">{selectedCourse.holes}</span>
-              <span className="stat-label">Holes</span>
-            </div>
-            <div className="stat-card">
-              <span className="stat-value">{selectedCourse.par}</span>
-              <span className="stat-label">Par</span>
-            </div>
+          <p className="section-title">Course (optional)</p>
+          <input
+            className="input"
+            placeholder="Course name (e.g. Pebble Beach)"
+            value={courseName}
+            onChange={(e) => setCourseName(e.target.value)}
+            style={{ width: "100%" }}
+          />
+          <div className="stat-grid" style={{ marginTop: "var(--space-3)" }}>
+            <button
+              className={`tee-btn${numHoles === 9 ? " tee-btn--active" : ""}`}
+              onClick={() => handleHolesChange(9)}
+            >
+              9 Holes
+            </button>
+            <button
+              className={`tee-btn${numHoles === 18 ? " tee-btn--active" : ""}`}
+              onClick={() => handleHolesChange(18)}
+            >
+              18 Holes
+            </button>
+          </div>
+          <div
+            style={{
+              marginTop: "var(--space-3)",
+              display: "flex",
+              alignItems: "center",
+              gap: "var(--space-2)",
+            }}
+          >
+            <label
+              className="section-title"
+              style={{ margin: 0, whiteSpace: "nowrap" }}
+            >
+              Total Par
+            </label>
+            <input
+              className="input"
+              type="number"
+              value={totalPar}
+              onChange={(e) => setTotalPar(Math.max(1, Number(e.target.value)))}
+              min={18}
+              max={99}
+              style={{ width: 80 }}
+            />
           </div>
         </div>
 
+        {/* Tee box */}
         <div className="page-section">
           <p className="section-title">Select Tee Box</p>
           <div className="tee-selector">
@@ -127,6 +182,7 @@ export function SetupRoundPage() {
           </div>
         </div>
 
+        {/* Players */}
         <div className="page-section">
           <p className="section-title">Players</p>
           <div className="player-list">
@@ -171,6 +227,7 @@ export function SetupRoundPage() {
           )}
         </div>
 
+        {/* Hat game */}
         <div className="page-section">
           <div className="card card--padded">
             <Toggle
@@ -180,16 +237,6 @@ export function SetupRoundPage() {
               onChange={setHatGame}
             />
           </div>
-        </div>
-
-        <div className="page-section">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate("/courses")}
-          >
-            <Search size={14} /> Change Course
-          </Button>
         </div>
 
         <Button
