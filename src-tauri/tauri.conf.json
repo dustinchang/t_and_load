@@ -37,9 +37,5 @@
       "icons/icon.ico"
     ]
   },
-  "plugins": {
-    "geolocation": {
-      "permissions": ["location"]
-    }
-  }
+  "plugins": {}
 }

@@ -54,7 +54,7 @@ export function HomePage() {
           <div className="page-hero-logo">⛳</div>
           <h1 className="page-hero-title">Golf Caddie</h1>
           <p className="page-hero-subtitle">
-            GPS maps · score tracking · the hat game
+            Score tracking · the hat game · stat history
           </p>
         </div>
 
@@ -117,7 +117,7 @@ export function HomePage() {
             <div className="empty-state-icon">🌿</div>
             <div className="empty-state-title">No rounds yet</div>
             <p className="empty-state-body">
-              Tap "Start New Round" to search for a course and tee off!
+              Tap "Start New Round" to set up players and tee off!
             </p>
           </div>
         )}
